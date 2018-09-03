@@ -1,0 +1,57 @@
+//usado para orquestar el primer momento en nuestros contenedores.
+//Para la orquestación, usemos Docker Compose. 
+
+version: '2.1'
+services:
+
+//servicio se compone del nombre del contenedor, la imagen que se utilizará, el puerto de comunicación y una prueba para verificar que el servicio se está ejecutando
+redis:
+    container_name: redis
+    image: redis
+    ports:
+     - "6379:6379"
+    healthcheck:
+      test: exit 0
+
+//base de datos,PostgreSQL
+users-service-db:
+    container_name: users-service-db
+    build: ./db
+    ports:
+      - 5435:5432 # expose ports - HOST:CONTAINER
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: exit 0
+
+//microservicio
+userservice:
+    container_name: userservice
+    image: userservice
+    build: ./UsersService
+    environment:
+      - APP_RD_ADDRESS=redis:6379
+      - APP_RD_AUTH=password
+      - APP_RD_DBNAME=0
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@users-service-db:5432/users_prod?sslmode=disable
+      - DATABASE_DEV_URL=postgres://postgres:postgres@users-service-db:5432/users_dev?sslmode=disable
+      - DATABASE_TEST_URL=postgres://postgres:postgres@users-service-db:5432/users_test?sslmode=disable
+    depends_on:
+      users-service-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    links:
+      - users-service-db
+      - redis
+
+//servicio nginx
+proxy:
+    container_name: userservice_loadbalance
+    build: ./nginx
+    ports:
+      - "80:80"
+    links:
+      - userservice
