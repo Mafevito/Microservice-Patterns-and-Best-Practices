@@ -14,10 +14,10 @@ class DevelopmentConfig(BaseConfig):
     """Development configuration""" 
     DEBUG = True 
     MONGODB_SETTINGS = { 
-        'db': 'famous_dev', 
+        'db': 'sports_dev', 
         'host': '{}{}'.format( 
             os.environ.get('DATABASE_HOST'), 
-            'famous_dev', 
+            'sports_dev', 
         ), 
     } 
 class TestingConfig(BaseConfig): 
@@ -25,10 +25,10 @@ class TestingConfig(BaseConfig):
     DEBUG = True 
     TESTING = True 
     MONGODB_SETTINGS = { 
-        'db': 'famous_test', 
+        'db': 'sports_test', 
         'host': '{}{}'.format( 
             os.environ.get('DATABASE_HOST'), 
-            'famous_test', 
+            'sports_test', 
         ), 
     } 
  
@@ -36,9 +36,9 @@ class ProductionConfig(BaseConfig):
     """Production configuration""" 
     DEBUG = False 
     MONGODB_SETTINGS = { 
-        'db': 'famous', 
+        'db': 'sports', 
         'host': '{}{}'.format( 
             os.environ.get('DATABASE_HOST'), 
-            'famous', 
+            'sports', 
         ), 
     }
