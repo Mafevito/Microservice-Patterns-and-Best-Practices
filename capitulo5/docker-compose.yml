@@ -10,7 +10,7 @@ services:
     healthcheck:
       test: exit 0
     restart: always
-
+# añadimos que MongoDB es nuestra base de datos. La declaración se hace muy simplemente dando un nombre al contenedor, especificando la puerta donde MongoDB será expuesto, y dando el comando que debe ser ejecutado para el funcionamiento de Mongo
   mongo: 
     image: mongo:latest 
     container_name: "mongodb" 
@@ -51,7 +51,8 @@ services:
       - users-service-db
       - redis
     restart: always
-
+#La variable APP_SETTINGS indica qué configuración adoptamos en el microservicio en función de lo que contiene el fichero config.py de la aplicación
+#La variable DATABASE_HOST nos muestra la ruta de acceso a la base de datos
   famous_news_service: 
     image: famous_news_service 
     build: ./FamousNewsService 
