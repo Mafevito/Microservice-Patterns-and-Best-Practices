@@ -1,0 +1,4 @@
+#Dependencias
+Flask 
+Flask-Testing 
+nameko

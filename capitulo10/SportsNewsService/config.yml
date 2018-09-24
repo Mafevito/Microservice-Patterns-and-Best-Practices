@@ -1,0 +1,18 @@
+#este archivo tiene la configuración para el Nameko en pleno funcionamiento
+
+#informamos a Nameko de la ruta de acceso al servidor de mensajes, en este caso, el RabbitMQ
+AMQP_URI: 'amqp://guest:guest@rabbitmq'
+
+#pasamos la ruta para acceder a la base de datos, permitiendo así la inyección de dependencia por parte de Nameko
+DB_URIS: 
+    "command_famous:Base": ${COMMANDDB_DEV_HOST}
+
+#ajuste se refiere al nivel de registro que debe ser utilizado por nuestra aplicación
+LOGGING: 
+    version: 1 
+    handlers: 
+        console: 
+            class: logging.StreamHandler 
+    root: 
+        level: DEBUG
+        handlers: [console]
