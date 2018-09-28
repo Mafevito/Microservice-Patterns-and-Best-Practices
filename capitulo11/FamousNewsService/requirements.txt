@@ -1,0 +1,18 @@
+#Dependencias del microservicio:
+
+#nameko: como framework
+#SQLAlchemy: como ORM
+#MongoEngine para acceso a MongoDB
+#controlador Postgres
+#PyTest para pruebas
+
+nameko 
+nameko-sqlalchemy 
+mongoengine 
+sqlalchemy 
+psycopg2 
+pytest
+
+
+#Nuestros microservicios de Noticias fueron construidos sobre el marco de Flask y tenían una API que hablaba directamente con el cliente. Ahora, esto será totalmente modificado. Utilizaremos un nuevo sistema de mensajería, con un agente de mensajes responsable de la comunicación. Nuestro marco principal en la composición de los microservicios será: Nameko.
+#El archivo config.yml tiene la configuración para el Nameko en pleno funcionamiento. 
