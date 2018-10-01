@@ -1,0 +1,13 @@
+#archivo responsable de decirle a nameko con qué tipo de ajustes trabajar. Como también usaremos nameko para la comunicación usando el protocolo HTTP, hay definiciones tales como el número de trabajadores y en qué ruta nameko responderá a las peticiones
+AMQP_URI: 'amqp://guest:guest@rabbitmq'
+WEB_SERVER_ADDRESS: '0.0.0.0:5000'
+max_workers: 10
+parent_calls_tracked: 10
+LOGGING:
+    version: 1
+    handlers:
+        console:
+            class: logging.StreamHandler
+    root:
+        level: DEBUG
+        handlers: [console]

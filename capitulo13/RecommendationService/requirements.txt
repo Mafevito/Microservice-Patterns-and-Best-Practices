@@ -1,0 +1,6 @@
+#herramienta de pruebas unitarias; nameko, que es el framework de la aplicación
+pytest
+nameko
+#es el driver entre la aplicación y la base de datos Neo4j
+py2neo
+requests
