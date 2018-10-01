@@ -221,6 +221,7 @@ recommendation_service:
           - QUEUE_HOST=amqp://guest:guest@rabbitmq
           - DATABASE_URL=http://recommendation_db:7474/db/data
           - USER_SERVICE_ROUTE=http://172.17.0.1/user/
+          - USER_SERVICE_HOST=usersservice:50051 #añadido cap11, para que RecommendationService conozca la ruta a UsersService
         depends_on:
           - recommendation_db
           - rabbitmq

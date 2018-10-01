@@ -9,6 +9,8 @@ import requests
 from nameko.web.handlers import http
 from nameko.events import event_handler
 
+from user_client import UserClient
+
 from models import (
     create_user_node,
     create_label_node,
@@ -29,14 +31,8 @@ class Recommendation:
             # getting the URL to do a sequential HTTP request to UsersService
             user_service_route = os.getenv('USER_SERVICE_ROUTE')
             # consuming data from UsersService using the requests lib
-            user = requests.get(
-                "{}{}".format(
-                    user_service_route,
-                    data['user_id'],
-                )
-            )
-            # serializing the UsersService data to JSON
-            user = user.json()
+            with UserClient(data['user_id']) as response:
+            user = response #añadido, capitulo11
             # creating user node on Neo4j
             create_user_node(user)
             # getting all tags read

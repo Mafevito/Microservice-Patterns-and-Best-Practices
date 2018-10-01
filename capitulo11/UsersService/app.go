@@ -13,6 +13,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	pb "github.com/viniciusfeitosa/BookProject/UsersService/user_data"
+  "google.golang.org/grpc"
+  "google.golang.org/grpc/reflection"
 )
 //es la estructura con los valores de configuración de la aplicación
 type App struct { 
@@ -69,24 +72,80 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
        respondWithError(w, http.StatusBadRequest, "Invalid product ID") 
        return 
 		 }
-
-		 if value, err := a.Cache.getValue(id); err == nil && len(value) != 0 { 
-			w.Header().Set("Content-Type", "application/json") 
-			w.WriteHeader(http.StatusOK) 
-			w.Write([]byte(value)) 
-			return 
+    //busca directamente desde la caché
+		func (a *App) getUserFromCache(id int) (string, error) {
+			if value, err := a.Cache.getValue(id); err == nil && 
+						len(value) != 0 {
+				 return value, err
+			}
+			return "", errors.New("Not Found")
+	 }
+   // busca en la base de datos si no se encuentra ningún dato en la caché
+	 func (a *App) getUserFromDB(id int) (User, error) {
+		user := User{ID: id}
+		if err := user.get(a.DB); err != nil {
+			switch err {
+				 case sql.ErrNoRows:
+						 return user, err
+						default:
+							return user, err
+			}
 		}
-   
-		user := User{ID: id} 
-		if err := user.get(a.DB); err != nil { 
-		  switch err { 
-			case sql.ErrNoRows: 
-			   respondWithError(w, http.StatusNotFound, "User not found") 
-			default: 
-			   respondWithError(w, http.StatusInternalServerError, err.Error()) 
-		  } 
-		  return 
-		} 
+		return user, nil
+ }
+
+ //estructura que servirá como manejador lógico para proporcionar los datos del usuario
+ type userDataHandler struct {
+	app *App
+ }
+//código responsable de componer el tipo de respuesta que espera el gRPC
+ func (handler *userDataHandler) composeUser(user User) 
+       *pb.UserDataResponse {
+      return &pb.UserDataResponse{
+        Id:    int32(user.ID),
+				Email: user.Email,
+				Name:  user.Name,
+      }
+		}
+//método responsable de recibir la solicitud a través del gRPC
+func (handler *userDataHandler) GetUser(ctx context.Context,
+	request *pb.UserDataRequest) (*pb.UserDataResponse, error) {
+var user User
+var err error
+if value, err := handler.app.getUserFromCache(int(request.Id)); 
+		 err == nil {
+	if err = json.Unmarshal([]byte(value), &user); err != nil {
+		 return nil, err
+	}
+	return handler.composeUser(user), nil
+}
+if user, err = handler.app.getUserFromDB(int(request.Id)); 
+		err == nil {
+ return handler.composeUser(user), nil
+}
+return nil, err
+}
+
+//Con la petición y la respuesta preparadas, escribamos el código del servidor gRPC.
+//Primero, declaramos el nombre del método que ejecutará el servidor:
+func (a *App) runGRPCServer(portAddr string) {
+ //Luego, preparamos al oyente del servidor
+	lis, err := net.Listen("tcp", portAddr)
+    if err != nil {
+      log.Fatalf("failed to listen: %v", err)
+		}
+	//Creamos la instancia del servidor y la registramos en el gRPC. Si no tenemos ningún tipo de error, tendremos nuestra capa de comunicación utilizando el gRPC funcionando perfectamente
+	s := grpc.NewServer()
+    pb.RegisterGetUserDataServer(s, &userDataHandler{app: a})
+    reflection.Register(s)
+    if err := s.Serve(lis); err != nil {
+      log.Fatalf("failed to serve: %v", err)
+    }
+   }
+
+
+
+
    
 		/*respondWithJSON(w, http.StatusOK, user) 
 		}*/

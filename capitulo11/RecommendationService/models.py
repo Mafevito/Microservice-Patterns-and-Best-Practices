@@ -53,12 +53,12 @@ def get_users_by_label(label):
 #crea un nodo de usuario en Neo4j si el nodo no ha sido creado previamente en la base de datos
 def create_user_node(user):
     # get user info from UsersService
-    if not get_user_node(user['id']):
+    if not get_user_node(user.id): #cambiado capitulo11
         user_node = Node(
             USERS_NODE,
-            id=user['id'],
-            name=user['name'],
-            email=user['email'],
+            id=user.id,
+            name=user.name,
+            email=user.email,
         )
         graph.create(user_node)
 

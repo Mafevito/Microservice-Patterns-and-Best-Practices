@@ -22,4 +22,6 @@ RUN mkdir -p /go/src \
   RUN go build -o main .
   CMD ["/go/src/app/main"]
 
-  EXPOSE 3000
+  EXPOSE 3000 50051
+
+#añadido 50051, en capitulo11

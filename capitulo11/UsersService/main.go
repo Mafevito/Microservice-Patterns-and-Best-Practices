@@ -18,6 +18,7 @@ const (
 	createUsersQueue = "CREATE_USER"
 	updateUsersQueue = "UPDATE_USER"
 	deleteUsersQueue = "DELETE_USER"
+	portAddr         = ":50051" //añadido capitulo11
 )
 
 func main() {
@@ -88,6 +89,7 @@ func main() {
 
 	a := App{}
 	a.Initialize(cache, db)
+	go a.runGRPCServer(portAddr) //añadido capitulo11, rutina para que los dos servidores funcionen al mismo tiempo: el servidor API y el servidor gRPC 
 	a.Run(":3000")
 }
 
