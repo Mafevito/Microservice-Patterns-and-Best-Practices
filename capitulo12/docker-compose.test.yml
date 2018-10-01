@@ -1,0 +1,27 @@
+#Este archivo sólo tiene los ajustes que queremos sobreescribir
+version: '3'
+services:
+  users_service:
+    environment:
+    - DATABASE_URL=postgresql://postgres:postgres@users_service_db:5432/users_test?sslmode=disable
+
+  famous_news_service:
+    environment:
+      - QUERYBD_HOST=mongodb://querydb_famous:27017/news_test
+      - COMMANDDB_HOST=postgresql://postgres:postgres@commanddb_famous:5432/news_test?sslmode=disable
+
+  politics_news_service:
+    environment:
+      - QUERYBD_HOST=mongodb://querydb_politics:27017/news_test
+      - COMMANDDB_HOST=postgresql://postgres:postgres@commanddb_politics:5432/news_test?sslmode=disable
+
+  sports_news_service:
+    environment:
+      - QUERYBD_HOST=mongodb://querydb_sports:27017/news_test
+      - COMMANDDB_HOST=postgresql://postgres:postgres@commanddb_sports:5432/news_test?sslmode=disable
+
+  recommendation_service:
+    environment:
+      - DATABASE_URL=http://recommendation_db:7474/db/test_data
+
+#Como se muestra en el bloque de código anterior, todos los cambios se refieren a las rutas de la base de datos. Esto es para crear bases de datos especiales para las pruebas, una especie de caja de arena.

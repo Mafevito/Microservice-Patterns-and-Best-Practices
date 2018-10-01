@@ -1,0 +1,22 @@
+//Este archivo tendrá todas las firmas necesarias para la comunicación.
+
+//versión del buffer del protocolo que vamos a usar
+
+syntax = "proto3";
+
+//El servicio es responsable de realizar el procesamiento con el método que se utilizará para la comunicación. Tenga en cuenta que el método GetUser recibe un tipo específico definido como una petición y envía otro tipo específico como respuesta
+service GetUserData {
+        rpc GetUser (UserDataRequest) returns (UserDataResponse) {}
+     }
+
+// creamos el tipo de entrada esperado por el método GetUser. Este tipo se compone de una interfaz de 32 bits
+message UserDataRequest {
+       int32 id = 1;
+    }
+
+//escribimos el tipo específico de respuesta
+message UserDataResponse {
+      int32 id = 1;
+      string name = 2;
+      string email = 3;
+    }
