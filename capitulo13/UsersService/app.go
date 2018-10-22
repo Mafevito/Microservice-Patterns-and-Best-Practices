@@ -23,7 +23,7 @@ type App struct {
 	Router           *mux.Router 
 	Cache            Cache
   }
-//Inicializa la creación de la conexión a la base de datos y prepara todas las rutas
+//inicializa la creación de la conexión a la base de datos y prepara todas las rutas
 func (a *App) Initialize(cache Cache, db *sqlx.DB) { 
   a.Cache = cache
 	a.DB = db 
@@ -65,7 +65,7 @@ func (a *App) Run(addr string) {
 	 w.Write(response) 
 	 }
 
-	/* añadido cap13, registro de errores*/
+	/* añadido en cap13, registro de errores*/
 	/* manejador que genera los errores para Sentry */
 	func (a *App) sentryerr(w http.ResponseWriter, r *http.Request) {
 			//La siguiente línea creará un error porque el archivo que intentamos leer no existe
@@ -82,9 +82,9 @@ func (a *App) Run(addr string) {
 }
 
 
-	/* Añadido cap13, supervisión de un servicio unico */
+	/* Añadido en cap13, supervisión de un servicio unico */
 	/* Nagios core es una herramienta para el monitoreo de multiples servicios*/
-	//crearemos el handler para esta nueva ruta. Comenzamos con el nombre del método, junto con sus parámetros
+	// crearemos el handler para esta nueva ruta. Comenzamos con el nombre del método, junto con sus parámetros
 	func (a *App) healthcheck(w http.ResponseWriter, r *http.Request) {
    		//escribiremos una variable para recopilar los errores, buscar una conexión de Pool desde la caché y preparar el retorno de la conexión al Pool
 			 var err error
@@ -111,7 +111,7 @@ func (a *App) Run(addr string) {
 }
 
 
-		//METODO CRUD
+//METODO CRUD
 //El primer método será el responsable de obtener un solo usuario; getUser.
 func (a *App) getUser(w http.ResponseWriter, r *http.Request) { 
       vars := mux.Vars(r) 
@@ -189,11 +189,7 @@ func (a *App) runGRPCServer(portAddr string) {
     if err := s.Serve(lis); err != nil {
       log.Fatalf("failed to serve: %v", err)
     }
-   }
-
-
-
-
+}
    
 		/*respondWithJSON(w, http.StatusOK, user) 
 		}*/
@@ -209,7 +205,7 @@ func (a *App) runGRPCServer(portAddr string) {
 		}
 		
 //El segundo método sera el responsable de obtener muchos usuarios a la vez; getUsers.
-	func (a *App) getUsers(w http.ResponseWriter, r *http.Request) { 
+func (a *App) getUsers(w http.ResponseWriter, r *http.Request) { 
 		count, _ := strconv.Atoi(r.FormValue("count")) 
 		start, _ := strconv.Atoi(r.FormValue("start")) 
    
@@ -227,7 +223,8 @@ func (a *App) runGRPCServer(portAddr string) {
 		} 
    
 		respondWithJSON(w, http.StatusOK, users) 
-	  }
+}
+		
 //Ahora, pasamos a los métodos que generan cambios en la base de datos
 //Método createUser
 func (a *App) createUser(w http.ResponseWriter, r *http.Request) { 
@@ -262,7 +259,8 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
       } 
  
       respondWithJSON(w, http.StatusCreated, user) 
-    }
+}
+		
 //Método updateUser
 func (a *App) updateUser(w http.ResponseWriter, r *http.Request) { 
 	vars := mux.Vars(r) 
@@ -286,7 +284,8 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
       } 
  
       respondWithJSON(w, http.StatusOK, user) 
-	}
+}
+
 //Método deleteUser
 func (a *App) deleteUser(w http.ResponseWriter, r *http.Request) { 
 	vars := mux.Vars(r) 
@@ -303,4 +302,4 @@ func (a *App) deleteUser(w http.ResponseWriter, r *http.Request) {
 	} 
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"}) 
-  }
+}
