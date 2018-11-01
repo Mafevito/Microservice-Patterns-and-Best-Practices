@@ -24,7 +24,7 @@ class Command:
 
 #método con el decorador de rpc. El decorador procede del marco Nameko y establece el modelo de comunicación RPC. Como estamos utilizando el patrón interno de abastecimiento de eventos junto con CQRS, debemos prestar atención a algunas peculiaridades
 
-#El método add_news formará parte de la llamada RPC dentro del microservicio de orquestación. Este método es imperativo y representa un comando para crear noticias
+#el método add_news formará parte de la llamada RPC dentro del microservicio de orquestación. Este método es imperativo y representa un comando para crear noticias
 @rpc 
     def add_news(self, data):
 
@@ -51,14 +51,14 @@ news = CommandNewsModel(
             self.db.add(news) 
             self.db.commit()
 
-#Con el proceso de registro en la base de datos normalizada definida, trabajaremos en el envío de un evento a registrar en la base de datos no normalizada, es decir, en la base de datos QueryStack
+#con el proceso de registro en la base de datos normalizada definida, trabajaremos en el envío de un evento a registrar en la base de datos no normalizada, es decir, en la base de datos QueryStack
 
 #generamos un nuevo evento utilizando la llamada RPC para informar de lo ocurrido al comando add_news
 data['id'] = news.id 
             data['version'] = news.version 
             self.dispatch('replicate_db_event', data) 
             return data
-#Si tenemos algún problema en nuestro proceso, ejecutaremos un rollback en la base estándar. De manera más deferente, comprenderemos por qué no realizamos el mismo procedimiento en la base de datos no estandarizada
+#si tenemos algún problema en nuestro proceso, ejecutaremos un rollback en la base estándar. De manera más deferente, comprenderemos por qué no realizamos el mismo procedimiento en la base de datos no estandarizada
             except Exception as e: 
             self.db.rollback() 
             return e
