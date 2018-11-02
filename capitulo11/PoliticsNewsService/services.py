@@ -63,7 +63,7 @@ data['id'] = news.id
             self.db.rollback() 
             return e
 
-#Después de crear la capa CommandStack, vamos al desarrollo de QueryStack
+#después de crear la capa CommandStack, vamos al desarrollo de QueryStack
 class Query: 
     name = 'query_famous'
 
@@ -121,6 +121,5 @@ try:
             return news.to_json() 
         except Exception as e: 
             return e
-
 
 #tenemos nuestro microservicio funcional de nuevo.
